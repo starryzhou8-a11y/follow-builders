@@ -638,7 +638,7 @@ async function fetchXContent(xAccounts, bearerToken, state, errors) {
 // The page is a Next.js app that embeds article data as JSON in <script> tags.
 // We parse that JSON to extract article metadata (title, slug, date, summary).
 // Falls back to regex-based HTML parsing if the JSON approach fails.
-function parseAnthropicEngineeringIndex(html) {
+function parseAnthropicSiteIndex(html, basePath = "engineering") {
   const articles = [];
 
   // Strategy 1: Look for article data in Next.js __NEXT_DATA__ script tag
@@ -656,7 +656,7 @@ function parseAnthropicEngineeringIndex(html) {
         const slug = post.slug?.current || post.slug || "";
         articles.push({
           title: post.title || "Untitled",
-          url: `https://www.anthropic.com/engineering/${slug}`,
+          url: `https://www.anthropic.com/${basePath}/${slug}`,
           publishedAt:
             post.publishedOn || post.publishedAt || post.date || null,
           description: post.summary || post.description || "",
@@ -669,8 +669,8 @@ function parseAnthropicEngineeringIndex(html) {
   }
 
   // Strategy 2: Regex-based extraction from the rendered HTML.
-  // Anthropic engineering articles follow the pattern /engineering/<slug>
-  const linkRegex = /href="\/engineering\/([a-z0-9-]+)"/gi;
+  // Anthropic articles follow the pattern /<basePath>/<slug>
+  const linkRegex = new RegExp(`href="/${basePath}/([a-z0-9-]+)"`, "gi");
   const seenSlugs = new Set();
   let linkMatch;
   while ((linkMatch = linkRegex.exec(html)) !== null) {
@@ -679,7 +679,7 @@ function parseAnthropicEngineeringIndex(html) {
     seenSlugs.add(slug);
     articles.push({
       title: "", // Will be filled when we fetch the article page
-      url: `https://www.anthropic.com/engineering/${slug}`,
+      url: `https://www.anthropic.com/${basePath}/${slug}`,
       publishedAt: null,
       description: "",
     });
@@ -883,7 +883,8 @@ async function fetchBlogContent(blogs, state, errors) {
 
       // Use the right parser based on which blog this is
       if (blog.indexUrl.includes("anthropic.com")) {
-        candidates = parseAnthropicEngineeringIndex(indexHtml);
+        const basePath = blog.indexUrl.includes("/news") ? "news" : "engineering";
+        candidates = parseAnthropicSiteIndex(indexHtml, basePath);
       } else if (blog.indexUrl.includes("claude.com")) {
         candidates = parseClaudeBlogIndex(indexHtml);
       }
@@ -931,7 +932,10 @@ async function fetchBlogContent(blogs, state, errors) {
 
           // Use the right content extractor based on the blog
           let extracted;
-          if (article.url.includes("anthropic.com/engineering")) {
+          if (
+            article.url.includes("anthropic.com/engineering") ||
+            article.url.includes("anthropic.com/news")
+          ) {
             extracted = extractAnthropicArticleContent(articleHtml);
           } else if (article.url.includes("claude.com/blog")) {
             extracted = extractClaudeBlogArticleContent(articleHtml);
