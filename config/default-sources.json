@@ -31,24 +31,32 @@
       "url": "https://www.youtube.com/playlist?list=PLuMcoKK9mKgHtW_o9h5sGO2vXrffKHwJL"
     }
   ],
-  "blogs": [
-    {
-      "name": "Anthropic Engineering",
-      "type": "scrape",
-      "indexUrl": "https://www.anthropic.com/engineering",
-      "articleBaseUrl": "https://www.anthropic.com/engineering/",
-      "fetchMethod": "http"
-    },
-    {
-      "name": "Claude Blog",
-      "type": "scrape",
-      "indexUrl": "https://claude.com/blog",
-      "articleBaseUrl": "https://claude.com/blog/",
-      "fetchMethod": "http"
-    }
-  ],
+ "blogs": [
+  {
+    "name": "Anthropic Engineering",
+    "type": "scrape",
+    "indexUrl": "https://www.anthropic.com/engineering",
+    "articleBaseUrl": "https://www.anthropic.com/engineering/",
+    "fetchMethod": "http"
+  },
+  {
+    "name": "Anthropic News",
+    "type": "scrape",
+    "indexUrl": "https://www.anthropic.com/news",
+    "articleBaseUrl": "https://www.anthropic.com/news/",
+    "fetchMethod": "http"
+  },
+  {
+    "name": "Claude Blog",
+    "type": "scrape",
+    "indexUrl": "https://claude.com/blog",
+    "articleBaseUrl": "https://claude.com/blog/",
+    "fetchMethod": "http"
+  }
+],
   "x_accounts": [
     { "name": "Andrej Karpathy", "handle": "karpathy" },
+    { "name": "Madison Mills", "handle": "MadisonMills22" }
     { "name": "Swyx", "handle": "swyx" },
     { "name": "Josh Woodward", "handle": "joshwoodward" },
     { "name": "Kevin Weil", "handle": "kevinweil" },
